@@ -5,9 +5,11 @@ import os
 from PIL import Image, ImageTk
 
 
+# On button click
 def convert():
     try:
         f = fd.asksaveasfilename(defaultextension=".mp4")
+        print(f)
 
         if f is None:
             return
@@ -27,13 +29,15 @@ def downloadmp4(directory):
     file_name = directory.split("/")[-1]
     direc = "/".join(directory.split("/")[:-1])
     video_url = url.get()
+
     try:
         youtube = pytube.YouTube(video_url)
         notif.config(fg="black")
         notif_text.set(f"Downloading \"{youtube.title}\"...")
 
-        video = youtube.streams.filter(progressive=True, file_extension="mp4").get_highest_resolution()
-        video.download(direc, filename=file_name.split(".")[0])
+        video = youtube.streams.filter(
+            progressive=True, file_extension="mp4").get_highest_resolution()
+        video.download(direc, filename=file_name.split(".")[0] + ".mp4")
 
         notif.config(fg="green")
         notif_text.set("Video downloaded successfully")
@@ -59,10 +63,10 @@ def downloadmp3(directory):
         notif_text.set(f"Downloading \"{youtube.title}\"...")
 
         audio = youtube.streams.filter(adaptive=True, only_audio=True).first()
-        audio.download(direc, filename=file_name.split(".")[0])
+        audio.download(direc, filename=file_name.split(".")[0] + ".mp3")
 
-        pre, ext = file_name.split(".")
-        os.rename(file_name, pre + ".mp3")
+        # pre, ext = file_name.split(".")
+        # os.rename(file_name, pre + ".mp3")
 
         notif.config(fg="green")
         notif_text.set("Audio downloaded successfully")
@@ -148,7 +152,8 @@ title = tk.Label(root, image=yt_photo, compound="left", text=" YouTube Downloade
                  fg="#f0f0f0", bg="#262626")
 title.grid(row=0, pady=15, columnspan=4)
 
-info = tk.Label(root, text="Type in url", fg="#f0f0f0", bg="#262626", font=("sans-serif", 13))
+info = tk.Label(root, text="Type in url", fg="#f0f0f0",
+                bg="#262626", font=("sans-serif", 13))
 info.grid(row=1, pady=(10, 0), columnspan=4)
 
 notif_text = tk.StringVar()
@@ -166,10 +171,12 @@ url.grid(row=2, ipady=10, padx=15, sticky="EW", columnspan=4)
 
 # Combobox
 
-format_combobox = ttk.Combobox(root, width=5, state="readonly", justify="center")
+format_combobox = ttk.Combobox(
+    root, width=5, state="readonly", justify="center")
 format_combobox["values"] = ("MP4", "MP3")
 format_combobox.set("MP4")
-format_combobox.grid(row=3, column=3, sticky="NSEW", padx=(0, 15), ipady=10, pady=(30, 10))
+format_combobox.grid(row=3, column=3, sticky="NSEW",
+                     padx=(0, 15), ipady=10, pady=(30, 10))
 format_combobox.option_add("*TCombobox*Listbox.background", "#505050")
 format_combobox.option_add("*TCombobox*Listbox.font", ("sans-serif", 15))
 format_combobox.option_add("*TCombobox*Listbox.foreground", "#f0f0f0")
@@ -177,7 +184,9 @@ format_combobox.option_add("*TCombobox*Listbox.selectBackground", "#f0f0f0")
 format_combobox.option_add("*TCombobox*Listbox.selectForeground", "#505050")
 
 # Convert Button
-convert_button = ttk.Button(root, text="Convert", command=convert, takefocus=False)
-convert_button.grid(row=3, pady=(30, 10), padx=15, sticky="EW", ipady=10, columnspan=3)
+convert_button = ttk.Button(
+    root, text="Convert", command=convert, takefocus=False)
+convert_button.grid(row=3, pady=(30, 10), padx=15,
+                    sticky="EW", ipady=10, columnspan=3)
 
 root.mainloop()
